@@ -30,10 +30,10 @@ connectToDB();
 // });
 
 // User Route
-app.get("/api/v1/users", userRoute);
+app.use("/api/v1/users", userRoute);
 
 // Story Route
-app.get("/api/v1/stories", storyRoute);
+app.use("/api/v1/stories", storyRoute);
 
 // Need to import the PORT
 const Port_num = process.env.PORT || 3000;
