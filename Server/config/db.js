@@ -9,8 +9,9 @@ dotenv.config();
 const connectToDB = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      // has no effect since Node.js Driver version 4.0.0
+      //   useNewUrlParser: true,
+      //   useUnifiedTopology: true,
     });
     console.log("Database is connected successfully ✔");
   } catch (error) {
