@@ -15,7 +15,7 @@ const storySchema = new mongoose.Schema(
     ],
     category: {
       type: String,
-      enum: ["food", "health and fitness", "travel", "movie", "education"],
+      enum: ["food", "health", "fitness", "travel", "movie", "education"],
       required: true,
     },
     likes: [

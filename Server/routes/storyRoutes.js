@@ -7,6 +7,7 @@ const {
   likeStory,
   updateStory,
   deleteStory,
+  getStoriesByCategory,
 } = require("../controllers/storyController");
 const router = express.Router();
 
@@ -19,8 +20,11 @@ router.get("/", getAllStories);
 // get story by id
 router.get("/:id", getStoryById);
 
+// get stories by category
+router.get("/category/:category", getStoriesByCategory);
+
 // like the story
-router.put('/like/:id', protectedRoute, likeStory)
+router.put("/like/:id", protectedRoute, likeStory);
 
 // update the specific story (protected route)
 router.put("/update/:id", protectedRoute, updateStory);

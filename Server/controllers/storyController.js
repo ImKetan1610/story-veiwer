@@ -52,6 +52,24 @@ const getStoryById = async (req, res) => {
   }
 };
 
+// get stories by category
+const getStoriesByCategory = async (req, res) => {
+  // extracting the category from params
+  const category = req.params.category;
+  try {
+    // finding the stories from the database on the basis of the category
+    const stories = await Story.find({ category });
+
+    if (!stories || stories.length === 0) {
+      return res.status(404).json({ message: "Stories are not found." });
+    }
+
+    return res.status(200).json(stories);
+  } catch (error) {
+    return res.status(500).send({ message: "Internal Server Error" });
+  }
+};
+
 // like the story
 const likeStory = async (req, res) => {
   let id = req.params.id;
@@ -130,6 +148,7 @@ module.exports = {
   createStory,
   getAllStories,
   getStoryById,
+  getStoriesByCategory,
   likeStory,
   updateStory,
   deleteStory,
