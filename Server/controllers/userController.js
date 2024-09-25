@@ -69,9 +69,39 @@ const loginUser = async (req, res) => {
 };
 
 // add stories to the bookmark
-const bookmarkStory = () => {};
+const bookmarkStory = async (req, res) => {
+  const storyId = req.params.storyId;
+  try {
+    const user = await User.findById(req.user._id);
+
+    // check if the story is bookmarked or not
+    const isBookmarked = user.bookmarks.includes(storyId);
+
+    if(isBookmarked){
+      //  as this is added to the bookmarks then we need to remove it from the db
+      user.bookmarks = user.bookmarks.filter((id)=> id.toString()!==storyId.toString)
+      await user.save()
+      return res.status(200).json({message: "Story is removed from the bookmarks."})
+    } else {
+      // need to add the story to the db
+      user.bookmarks.push(storyId);
+      await user.save();
+      return res.status(200).json({message: "Story is bookmarked successfully."})
+    }
+  } catch (error) {
+    return res.status(500).json({message: "Internal Server Error."})
+  }
+};
 
 // get all the bookmarked stories
-const getBookmarks = () => {};
+const getBookmarks = async (req, res) => {
+  let id = req.user._id;
+  try {
+    const user = await User.findById(id).populate('bookmarks');
+    res.status(200).json(user.bookmarks);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching bookmarks', error });
+  }
+};
 
 module.exports = { registerUser, loginUser, bookmarkStory, getBookmarks };

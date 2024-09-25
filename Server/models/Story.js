@@ -18,6 +18,12 @@ const storySchema = new mongoose.Schema(
       enum: ["food", "health and fitness", "travel", "movie", "education"],
       required: true,
     },
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -30,5 +36,17 @@ const storySchema = new mongoose.Schema(
   }
 );
 
-const Story = mongoose.model('Story', storySchema);
+// Method to add/remove a like
+storySchema.methods.toggleLike = function (userId) {
+  if (this.likes.includes(userId)) {
+    // Unlike the story
+    this.likes.pull(userId);
+  } else {
+    // Like the story
+    this.likes.push(userId);
+  }
+  return this.save();
+};
+
+const Story = mongoose.model("Story", storySchema);
 module.exports = Story;

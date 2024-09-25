@@ -4,6 +4,7 @@ const {
   createStory,
   getAllStories,
   getStoryById,
+  likeStory,
   updateStory,
   deleteStory,
 } = require("../controllers/storyController");
@@ -17,6 +18,9 @@ router.get("/", getAllStories);
 
 // get story by id
 router.get("/:id", getStoryById);
+
+// like the story
+router.put('/like/:id', protectedRoute, likeStory)
 
 // update the specific story (protected route)
 router.put("/update/:id", protectedRoute, updateStory);
