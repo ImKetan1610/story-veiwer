@@ -16,4 +16,4 @@
 
 8. **morgan**: An HTTP request logger middleware for Node.js, useful for logging requests to the console, aiding in debugging and monitoring.
 
-9. **nodemon** (dev dependency): A utility that monitors for any changes in your source files and automatically restarts the server, enhancing the development workflow..
+9. **nodemon** (dev dependency): A utility that monitors for any changes in your source files and automatically restarts the server, enhancing the development workflow.
