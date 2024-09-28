@@ -8,6 +8,7 @@ const {
   updateStory,
   deleteStory,
   getStoriesByCategory,
+  getStoriesByUser,
 } = require("../controllers/storyController");
 const router = express.Router();
 
@@ -16,6 +17,9 @@ router.post("/create", protectedRoute, createStory);
 
 // get all story
 router.get("/", getAllStories);
+
+// Route to get stories by a specific user
+router.get('/user/:userId', protectedRoute, getStoriesByUser);
 
 // get story by id
 router.get("/:id", getStoryById);

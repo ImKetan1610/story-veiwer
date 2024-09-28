@@ -52,6 +52,30 @@ const getStoryById = async (req, res) => {
   }
 };
 
+// get stories by specific users
+const getStoriesByUser = async (req, res) => {
+  try {
+    // extract the id from the routes parameter
+    const { userId } = req.params;
+
+    // find the user stories where the userId matches the creator of the story
+    const userStories = await Story.find({ createdBy: userId });
+
+    // return the error if the stories are not found
+    if (!userStories || userStories.length == 0) {
+      return req
+        .status(404)
+        .json({ message: "No stories found for this user." });
+    }
+
+    // return the stories by the user
+    return res.status(200).json(userStories);
+  } catch (error) {
+    // return the error
+    return res.status(500).send("Internal Server Error.");
+  }
+};
+
 // get stories by category
 const getStoriesByCategory = async (req, res) => {
   // extracting the category from params
@@ -148,6 +172,7 @@ module.exports = {
   createStory,
   getAllStories,
   getStoryById,
+  getStoriesByUser,
   getStoriesByCategory,
   likeStory,
   updateStory,
