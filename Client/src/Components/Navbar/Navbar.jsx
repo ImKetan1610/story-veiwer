@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react";
+import { useSelector } from "react-redux";
+import MobileNavbar from "./MobileNavbar";
+import DesktopNavbar from "./DesktopNavbar";
 
 const Navbar = () => {
-  return (
-    <div>
-      navbar hai
-    </div>
-  )
-}
+  const { isMobileScreen } = useSelector((state) => state.layout);
 
-export default Navbar
+  return <>{isMobileScreen ? <MobileNavbar /> : <DesktopNavbar />}</>;
+};
+
+export default Navbar;
