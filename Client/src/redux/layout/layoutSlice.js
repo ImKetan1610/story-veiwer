@@ -2,8 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isMobileScreen: false,
-  isDesktopScreen: false,
   isTabScreen: false,
+  isDesktopScreen: false,
 };
 
 const layoutSlice = createSlice({
