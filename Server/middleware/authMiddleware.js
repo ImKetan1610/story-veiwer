@@ -2,7 +2,15 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const protectedRoute = async (req, res, next) => {
-  const token = req.cookies.token;
+  const authHeader = req.headers.authorization;
+  let token;
+
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    token = authHeader.split(" ")[1]; // Extract token from "Bearer <token>"
+  } else {
+    // Fallback to token from cookies if Authorization header is not present
+    token = req.cookies.token;
+  }
   if (!token) {
     return res.status(401).json({ success: false, message: "Unauthorized" });
   }
