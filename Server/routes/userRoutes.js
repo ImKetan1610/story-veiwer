@@ -1,23 +1,25 @@
 const express = require("express");
-const { protectedRoute } = require("../middleware/authMiddleware");
-const {
-  registerUser,
-  loginUser,
-  bookmarkStory,
-  getBookmarks,
-} = require("../controllers/userController");
 const router = express.Router();
+const {
+  testAPI,
+  register,
+  login,
+  findUser,
+  logout,
+  bookmarkedStories,
+  getAllBookmarks,
+} = require("../controllers/userController.js");
+const { protectedRoute } = require("../middleware/authMiddleware.js");
 
-// User Registration
-router.post("/register", registerUser);
+//user routes
+router.get("/test", testAPI);
+router.get("/find/:username", protectedRoute, findUser);
+router.post("/register", register);
+router.post("/login", login);
+router.post("/logout", logout);
 
-// user login
-router.post("/login", loginUser);
-
-// bookmark a story (protected route)
-router.post("/bookmark/:storyId", protectedRoute, bookmarkStory);
-
-// get all bookmarked stories for the specific user (protected route)
-router.get("/all-bookmark", protectedRoute, getBookmarks);
+//bookmark route
+router.put("/bookmark/:id", protectedRoute, bookmarkedStories);
+router.get("/bookmarks/:userId", protectedRoute, getAllBookmarks);
 
 module.exports = router;

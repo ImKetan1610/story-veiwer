@@ -6,8 +6,7 @@ export const VIEW_STORY = "VIEW_STORY";
 
 export const categories = [
   "food",
-  "health",
-  "fitness",
+  "health and fitness",
   "travel",
   "movie",
   "education",

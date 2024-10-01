@@ -10,11 +10,11 @@ import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary.jsx";
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Provider store={store}>
-      <ErrorBoundary>
+      {/* <ErrorBoundary> */}
         <Layout>
           <App />
         </Layout>
-      </ErrorBoundary>
+      {/* </ErrorBoundary> */}
     </Provider>
   </BrowserRouter>
 );

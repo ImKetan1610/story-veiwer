@@ -1,39 +1,19 @@
 const express = require("express");
-const { protectedRoute } = require("../middleware/authMiddleware");
-const {
-  createStory,
-  getAllStories,
-  getStoryById,
-  likeStory,
-  updateStory,
-  deleteStory,
-  getStoriesByCategory,
-  getStoriesByUser,
-} = require("../controllers/storyController");
 const router = express.Router();
+const {
+  addStory,
+  editStory,
+  getStories,
+  getStoryById,
+  likedStories,
+} = require("../controllers/storyController.js");
+const { protectedRoute } = require("../middleware/authMiddleware.js");
 
-// create new story (protected route)
-router.post("/create", protectedRoute, createStory);
-
-// get all story
-router.get("/", getAllStories);
-
-// Route to get stories by a specific user
-router.get('/user/:userId', protectedRoute, getStoriesByUser);
-
-// get story by id
-router.get("/:id", getStoryById);
-
-// get stories by category
-router.get("/category/:category", getStoriesByCategory);
-
-// like the story
-router.put("/like/:id", protectedRoute, likeStory);
-
-// update the specific story (protected route)
-router.put("/update/:id", protectedRoute, updateStory);
-
-// delete the specific story (protected route)
-router.delete("/delete/:id", protectedRoute, deleteStory);
+//routes
+router.post("/add", protectedRoute, addStory);
+router.put("/edit/:id", protectedRoute, editStory);
+router.put("/like/:id", protectedRoute, likedStories);
+router.get("/getAll", getStories);
+router.get("/getById/:storyId", getStoryById);
 
 module.exports = router;

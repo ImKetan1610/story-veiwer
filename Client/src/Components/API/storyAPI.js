@@ -30,112 +30,139 @@ import {
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.withCredentials = true;
 
-// Create a New Story (Protected Route)
+//add Story
 export const addStory = (values) => async (dispatch) => {
   try {
     dispatch(addStoryRequest());
-    const { data } = await axios.post("/api/story/create", values);
+    const { data } = await axios.post("/api/story/add", values);
     dispatch(addStorySuccess(data));
     toast.success("Story added successfully", {
       position: "top-center",
     });
   } catch (error) {
     dispatch(addStoryFailure());
-    toast.error(error.response?.data || "Failed to add story", {
-      position: "top-center",
-    });
+    toast.error(error.response.data, { position: "top-center" });
   }
 };
 
-// Fetch All Stories
-export const getStories = (page = 1, catLimit = 4, cat = "All") => async (dispatch) => {
+//fetch stories
+export const getStories = (page, catLimit, cat) => async (dispatch) => {
   try {
+    if (page === null) {
+      page = 1;
+    }
+    if (catLimit === null) {
+      catLimit = 4;
+    }
+    if (cat === null) {
+      cat = "All";
+    }
     dispatch(getStoriesRequest());
-    const { data } = await axios.get(`/api/story?page=${page}&catLimit=${catLimit}&cat=${cat}`);
+    const { data } = await axios.get(
+      `/api/story/getAll?category=All&page=${page}&catLimit=${catLimit}&cat=${cat}`
+    );
     dispatch(getStoriesSuccess(data));
   } catch (error) {
     dispatch(getStoriesFailure());
-    toast.error(error.response?.data || "Failed to fetch stories");
+    toast.error(error.response.data);
   }
 };
 
-// Fetch Story by ID
-export const getStory = (storyId, userId = null) => async (dispatch) => {
+//fetch story by id
+export const getStory = (storyId, userId) => async (dispatch) => {
   try {
     dispatch(fetchStoryRequest());
-    const { data } = await axios.get(`/api/story/${storyId}`, { params: { userId } });
-    dispatch(fetchStorySuccess(data));
+    if (userId === null) {
+      //fetch story for not authorized users
+      const { data } = await axios.get(`/api/story/getById/${storyId}`);
+      dispatch(fetchStorySuccess(data));
+    } else {
+      //fetch story for authorized users
+      const { data } = await axios.get(
+        `/api/story/getById/${storyId}?userId=${userId}`
+      );
+      dispatch(fetchStorySuccess(data));
+    }
   } catch (error) {
     dispatch(fetchStoryFailure());
-    toast.error(error.response?.data || "Failed to fetch story");
+    toast.error(error);
   }
 };
 
-// Fetch Stories Created by a Specific User (Protected Route)
-export const getStoriesByUser = (userId, userStoriesPage = 1) => async (dispatch) => {
-  try {
-    dispatch(getStoryByUserRequest());
-    const { data } = await axios.get(`/api/story/user/${userId}?page=${userStoriesPage}`);
-    dispatch(getStoryByUserSuccess(data));
-  } catch (error) {
-    dispatch(getStoryByUserFailure());
-    toast.error(error.response?.data || "Failed to fetch user stories");
-  }
-};
+// fetch user created stories
+export const getStoriesByUser =
+  (userId, userStoriesPage) => async (dispatch) => {
+    try {
+      if (userStoriesPage === null) {
+        userStoriesPage = 1;
+      }
+      dispatch(getStoryByUserRequest());
+      const { data } = await axios.get(
+        `/api/story/getAll?userId=${userId}&page=${userStoriesPage}`
+      );
+      dispatch(getStoryByUserSuccess(data));
+    } catch (error) {
+      dispatch(getStoryByUserFailure());
+      toast.error(error.response.data);
+    }
+  };
 
-// Fetch Stories by Category
-export const getStoriesByCategory = (category, page = 1) => async (dispatch) => {
+//fetch story by category
+export const getStoriesByCategory = (category, page) => async (dispatch) => {
   try {
+    if (page === null) {
+      page = 1;
+    }
     dispatch(getCategoryStoriesRequest());
-    const { data } = await axios.get(`/api/story/category/${category}?page=${page}`);
+    const { data } = await axios.get(
+      `/api/story/getAll?category=${category}&page=${page}`
+    );
     dispatch(getCategoryStoriesSuccess(data));
   } catch (error) {
     dispatch(getCategoryStoriesFailure());
-    toast.error(error.response?.data || "Failed to fetch stories by category");
+    toast.error(error.response.data);
   }
 };
 
-// Like a Story (Protected Route)
+//like Story
 export const likeStory = (id, userId) => async (dispatch) => {
   try {
-    const { data } = await axios.put(`/api/story/like/${id}`, { userId });
+    const data = await axios.put(`/api/story/like/${id}`, { userId: userId });
     dispatch(likeSuccess(data.story));
-    toast.success("Story liked successfully", {
+    toast.success("Story liked and saved successfully", {
       position: "top-center",
     });
   } catch (error) {
     dispatch(likeFailure());
-    toast.error(error.response?.data?.message || "Failed to like the story", {
-      position: "top-center",
-    });
+    toast.error(error.response.data.message, { position: "top-center" });
   }
 };
 
-// Bookmark a Story (Protected Route)
+//bookmark story
 export const bookmarkStory = (id, userId) => async (dispatch) => {
   try {
     dispatch(bookmarkRequest());
-    const { data } = await axios.put(`/api/user/bookmark/${id}`, { userId });
+    const { data } = await axios.put(`/api/user/bookmark/${id}`, {
+      userId: userId,
+    });
     dispatch(bookmarkSuccess(data.story));
-    toast.success("Story bookmarked successfully", {
+    toast.success("Story bookmarked and saved successfully", {
       position: "top-center",
     });
   } catch (error) {
     dispatch(bookmarkFailure());
-    toast.error(error.response?.data?.message || "Failed to bookmark the story", {
-      position: "top-center",
-    });
+    toast.error(error.response.data.message, { position: "top-center" });
   }
 };
 
-// Get All Bookmarked Stories for a User (Protected Route)
+//get bookmarks
 export const getBookmarks = (userId) => async (dispatch) => {
   try {
     dispatch(getBookmarksRequest());
-    const { data } = await axios.get(`/api/user/all-bookmark`);
+    const { data } = await axios.get(`/api/user/bookmarks/${userId}`);
     dispatch(getBookmarksSuccess(data.bookmarks));
   } catch (error) {
     dispatch(getBookmarksFailure());
-    toast.error(error.response?.data || "Failed to fetch bookmarks");
+    toast.error(error.response.data);
   }
 };

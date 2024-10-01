@@ -13,14 +13,14 @@ import {
   findUserFailure,
   logoutRequest,
   logoutSuccess,
-  logoutFailure
-} from "../../redux/userAuth/userAuthSlice.js";
-import { getBookmarks } from "./storyAPI.js";
+  logoutFailure,
+} from "../../redux/userauth/userauthSlice.js";
+import { getStoriesByUser } from "./storyAPI.js";
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.withCredentials = true;
 
-// User Registration
+//register
 export const register = (values) => async (dispatch) => {
   try {
     dispatch(registerRequest());
@@ -29,17 +29,17 @@ export const register = (values) => async (dispatch) => {
     });
     dispatch(registerSuccess(data));
     localStorage.setItem("username", JSON.stringify(data.username));
-    toast.success("User registered successfully", {
+    toast.success(" User register successful", {
       position: "top-right",
       autoClose: 2000,
     });
   } catch (error) {
     dispatch(registerFailure());
-    toast.error(error.response?.data || "Registration failed");
+    toast.error(error.response.data);
   }
 };
 
-// User Login
+//login
 export const login = (values) => async (dispatch) => {
   try {
     dispatch(loginRequest());
@@ -47,48 +47,43 @@ export const login = (values) => async (dispatch) => {
       withCredentials: true,
     });
     dispatch(loginSuccess(data));
-    dispatch(getBookmarks(data.userId)); // Fetch bookmarks after login
+    dispatch(getStoriesByUser(data.userId));
     localStorage.setItem("username", JSON.stringify(data.username));
-    toast.success("User logged in successfully", {
+    toast.success(" User login Successful", {
       position: "top-right",
       autoClose: 2000,
     });
   } catch (error) {
     dispatch(loginFailure());
-    toast.error(error.response?.data || "Login failed");
+    toast.error(error.response.data);
   }
 };
 
-// Find Logged-in User
+//find user
 export const findUser = () => async (dispatch) => {
   const username = JSON.parse(localStorage.getItem("username"));
-  if (!username) {
-    toast.error("No user found in local storage");
-    return;
-  }
   try {
     dispatch(findUserRequest());
     const { data } = await axios.get(`/api/user/find/${username}`);
     dispatch(findUserSuccess(data));
   } catch (error) {
     dispatch(findUserFailure());
-    toast.error("Failed to find user");
   }
 };
 
-// User Logout
+//logout
 export const logout = () => async (dispatch) => {
   try {
     dispatch(logoutRequest());
     await axios.post("/api/user/logout", { withCredentials: true });
     dispatch(logoutSuccess());
     localStorage.removeItem("username");
-    toast.success("User logged out successfully", {
+    toast.success("User logout Successfully", {
       position: "top-right",
       autoClose: 1000,
     });
   } catch (error) {
     dispatch(logoutFailure());
-    toast.error(error.response?.data || "Logout failed");
+    toast.error(error.response.data);
   }
 };

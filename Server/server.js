@@ -1,44 +1,55 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const morgan = require("morgan");
-const connectToDB = require("./config/db");
-const userRoute = require("./routes/userRoutes");
-const storyRoute = require("./routes/storyRoutes");
+const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
+const path = require("path");
 
-// Load environment variable from .env file
+//importing routes
+const userRoutes = require("./routes/userRoutes.js")
+const storyRoutes = require("./routes/storyRoutes.js")
+const connectToDB = require("./config/db.js");
+
+//to load environment variables
 dotenv.config();
 
-// Initialize an app instance using express
 const app = express();
+const PORT = process.env.PORT || 3000;
+// const FRONTEND = process.env.FRONTEND;
 
-// initialize global middleware
-// enable cors
-app.use(cors());
-// parse JSON bodies
-app.use(express.json());
-// log requests to console
-app.use(morgan("dev"));
-
-// connect to mongodb by calling the function
+//database connection
 connectToDB();
 
-// routes
-// app.get("/", (req, res) => {
-//   res.send("Welcome to the story viewing platform..!!!");
-// });
+//middleware so that server can understand json format data
+app.use(express.json());
 
-// User Route
-app.use("/api/v1/users", userRoute);
+//middleware for path settings
+app.use(express.static(path.join(__dirname, "../client/dist")));
 
-// Story Route
-app.use("/api/v1/stories", storyRoute);
+//to get cookie we use this middleware
+app.use(cookieParser());
 
-// Need to import the PORT
-const Port_num = process.env.PORT || 3000;
+//to parse incoming data
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// listening to app on port 
-app.listen(Port_num, () => {
-  console.log(`server is running on port ${Port_num}`);
+//cors settings
+const corsOptions = {
+  credentials: true,
+  origin: "*",
+};
+app.use(cors(corsOptions));
+
+//routes
+app.use("/api/user", userRoutes);
+app.use("/api/story", storyRoutes);
+
+//path
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../client/dist/index.html"));
+});
+
+// run server
+app.listen(PORT, () => {
+  console.log(`Server is up and running on port🚀 ${PORT} `);
 });

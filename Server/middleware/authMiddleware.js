@@ -1,33 +1,20 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+require("dotenv").config();
 
 const protectedRoute = async (req, res, next) => {
-  let token;
-
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    try {
-      // get token from headers
-      token = req.header.authorization.split(" ")[1];
-      // verify token
-      const decoded = jwt.verify(token, process.env.SECRETE_PASSKEY);
-
-      // attach the user to the requests
-      // The '-' sign in front of password tells Mongoose to exclude this field.
-      req.user = await User.findById(decoded.id).select("-password");
-      next();
-    } catch (error) {
-      return res.status(401).send({ message: "Not Authorized" });
-    }
-  }
-
+  const token = req.cookies.token;
   if (!token) {
-    return res
-      .status(401)
-      .json({ message: "User is not authorized for this task." });
+    return res.status(401).json({ success: false, message: "Unauthorized" });
   }
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      req.user = null;
+      return res.status(403).json("The provided token is not valid");
+    } else {
+      req.user = user;
+    }
+    next();
+  });
 };
 
 module.exports = { protectedRoute };

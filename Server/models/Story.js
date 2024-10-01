@@ -2,51 +2,53 @@ const mongoose = require("mongoose");
 
 const storySchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: [true, "Title is required"],
-      trim: true,
-    },
     slides: [
       {
-        type: String,
-        required: [true, "Slide content (image/video URL) is required."],
+        heading: {
+          type: String,
+          required: true,
+        },
+        description: {
+          type: String,
+          required: true,
+        },
+        imageUrl: {
+          type: String,
+          required: true,
+        },
+        category: {
+          type: String,
+          required: true,
+        },
       },
     ],
-    category: {
-      type: String,
-      enum: ["food", "health", "fitness", "travel", "movie", "education"],
-      required: true,
-    },
     likes: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        username: String,
       },
     ],
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+    bookmarks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        username: String,
+      },
+    ],
+    totalLikes: {
+      type: Number,
+      default: 0,
+    },
+    addedBy: {
+      type: String,
     },
   },
-  {
-    timestamps: true,
-    versionKey: false,
+  { 
+    timestamps: true, 
+    versionKey: false 
   }
 );
-
-// Method to add/remove a like
-storySchema.methods.toggleLike = function (userId) {
-  if (this.likes.includes(userId)) {
-    // Unlike the story
-    this.likes.pull(userId);
-  } else {
-    // Like the story
-    this.likes.push(userId);
-  }
-  return this.save();
-};
 
 const Story = mongoose.model("Story", storySchema);
 module.exports = Story;
