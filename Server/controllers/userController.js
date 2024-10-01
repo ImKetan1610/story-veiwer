@@ -102,7 +102,7 @@ const findUser = async (req, res, next) => {
     if (user) {
       res
         .status(200)
-        .json({ success: true, username: username, userId: user._id, user });
+        .json({ success: true, username: user.username, userId: user._id, user });
     } else {
       res.status(404).json("User not found");
     }
