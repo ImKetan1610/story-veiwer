@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Progress from "./Progress.jsx";
 import Slide from "./Slide.jsx";
 import { useSelector } from "react-redux";
