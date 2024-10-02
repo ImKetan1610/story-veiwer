@@ -12,7 +12,7 @@ import AddStory from "./Components/Story/StoryForm/StoryAdd.jsx";
 import EditStory from "./Components/Story/StoryForm/StoryEdit.jsx";
 import UserAuth from "./Components/UserAuth/UserAuth.jsx";
 import { REGISTER, ADD_STORY, EDIT_STORY, LOGIN } from "./globals.js";
-import ViewStory from "./components/Story/StoryDetail/StoryDetail.jsx";
+import ViewStory from "./Components/Story/StoryDetail/StoryDetail.jsx";
 import BookmarkPage from "./Pages/BookmarkPage/BookmarkPage.jsx";
 import UserStories from "./Pages/UserStories/UserStories.jsx";
 import PageNotFound from "./Components/PageNotFound/PageNotFound.jsx";
