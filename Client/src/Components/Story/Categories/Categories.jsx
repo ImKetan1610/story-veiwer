@@ -1,25 +1,32 @@
-import React from "react";
 import allImg from "../../../assets/categories/all.jpg";
 import foodImg from "../../../assets/categories/food.jpg";
-import healthImg from "../../../assets/categories/health.jpg";
-import travelImg from "../../../assets/categories/travel.jpg";
-import movieImg from "../../../assets/categories/movie.jpg";
-import educationImg from "../../../assets/categories/education.jpg";
+import medicalImg from "../../../assets/categories/medical.jpg";
+import fruitsImg from "../../../assets/categories/fruits.jpg";
+import worldImg from "../../../assets/categories/world.jpg";
+import indiaImg from "../../../assets/categories/india.jpg";
+import { useSelector } from "react-redux";
 
 const Categories = ({ handleCategoryClick, categories, selectedCategory }) => {
+  const { isMobileScreen } = useSelector((state) => state.layout);
   const images = {
+    medical: medicalImg,
+    fruits: fruitsImg,
+    world: worldImg,
+    india: indiaImg,
     food: foodImg,
-    health: healthImg,
-    travel: travelImg,
-    movie: movieImg,
-    education: educationImg,
   };
 
   return (
-    <div className="flex justify-between items-center overflow-x-hidden mx-4 mt-8">
+    <div
+      className={`flex justify-between items-center mx-4 mt-8 gap-4 ${
+        isMobileScreen ? "overflow-x-scroll" : "overflow-x-hidden"
+      }`}
+    >
       <div
         onClick={() => handleCategoryClick("All")}
-        className={`w-1/5 h-40 flex items-center justify-center rounded-lg text-white text-center p-4 bg-center bg-cover cursor-pointer transition-transform transform hover:scale-105 ${
+        className={`w-1/5 ${
+          isMobileScreen ? "h-40" : "h-48"
+        } min-w-[10rem] flex items-center justify-center rounded-3xl text-white text-center p-4 bg-center bg-cover cursor-pointer transition-transform transform hover:scale-105 ${
           selectedCategory === "All" ? "border-4 border-blue-300" : ""
         }`}
         style={{
@@ -34,7 +41,9 @@ const Categories = ({ handleCategoryClick, categories, selectedCategory }) => {
           <div
             key={index}
             onClick={() => handleCategoryClick(category)}
-            className={`w-1/5 h-40 flex items-center justify-center rounded-lg text-white text-center p-4 bg-center bg-cover cursor-pointer transition-transform transform hover:scale-105 ${
+            className={`w-1/5 ${
+              isMobileScreen ? "h-40" : "h-48"
+            } min-w-[10rem] flex items-center justify-center rounded-3xl text-white text-center p-4 bg-center bg-cover cursor-pointer transition-transform transform hover:scale-105 ${
               selectedCategory === category ? "border-4 border-blue-300" : ""
             }`}
             style={{
@@ -45,7 +54,7 @@ const Categories = ({ handleCategoryClick, categories, selectedCategory }) => {
               }`,
             }}
           >
-            <h3 className="text-lg">{category}</h3>
+            <h3 className="text-lg capitalize">{category}</h3>
           </div>
         ))}
     </div>

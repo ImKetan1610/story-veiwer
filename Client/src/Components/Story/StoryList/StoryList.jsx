@@ -24,11 +24,11 @@ const Stories = ({ category }) => {
     storiesLoading,
   } = useSelector((state) => state.story);
   let catLimit = {
+    medical: 4,
+    fruits: 4,
+    world: 4,
+    india: 4,
     food: 4,
-    health: 4,
-    travel: 4,
-    movie: 4,
-    education: 4,
   };
 
   // Fetch stories on page load
@@ -58,7 +58,17 @@ const Stories = ({ category }) => {
   // Render stories
   const renderStories = (storyArray, isLoading, pageFunction) => (
     <>
-      <div className={`grid ${isMobileScreen ? "grid-cols-1" : "grid-cols-4"} gap-4`}>
+      {category == "All" && storyArray.length === 0 && (
+        <h1 className="text-slate-400 font-bold text-lg text-center mb-[8rem] mt-[8rem] capitalize">
+          No stories found!
+        </h1>
+      )}
+      
+      <div
+        className={`grid ${
+          isMobileScreen ? "grid-cols-1" : "grid-cols-4"
+        } gap-4`}
+      >
         {storyArray &&
           storyArray.map((story) =>
             isLoading ? (
@@ -79,8 +89,8 @@ const Stories = ({ category }) => {
   // Render authorized user stories
   const renderUserStories = () => (
     <>
-      {userStories && userStories.length > 0 && (
-        <h2 className="text-center text-xl my-4">Your Stories</h2>
+      {userStories && userStories.length >= 0 && (
+        <h2 className="text-center font-bold text-2xl my-4">Your Stories</h2>
       )}
       {renderStories(userStories, false, () =>
         dispatch(getStoriesByUser(userId, userStoriesPage + 1))
@@ -97,24 +107,22 @@ const Stories = ({ category }) => {
 
           {/* Fetch all stories */}
           <>
-            {Object?.keys(stories)?.map(
-              (key) =>
-                stories[key].length > 0 && (
-                  <div key={key}>
-                    <h2 className="text-center text-xl my-4">
-                      Top Stories About {key}
-                    </h2>
-                    {renderStories(stories[key], storiesLoading, () =>
-                      Object.keys(catLimit).forEach((cat) => {
-                        if (cat === key) {
-                          catLimit[cat] = catLimit[cat] + 4;
-                          dispatch(getStories(page + 1, catLimit[cat], cat));
-                        }
-                      })
-                    )}
-                  </div>
-                )
-            )}
+            {console.log(Object.keys(stories))}
+            {Object.keys(stories).map((key) => (
+              <div key={key}>
+                <h2 className="text-center text-2xl my-4 font-bold capitalize">
+                  Top Stories About {key}
+                </h2>
+                {renderStories(stories[key], storiesLoading, () =>
+                  Object.keys(catLimit).forEach((cat) => {
+                    if (cat === key) {
+                      catLimit[cat] = catLimit[cat] + 4;
+                      dispatch(getStories(page + 1, catLimit[cat], cat));
+                    }
+                  })
+                )}
+              </div>
+            ))}
           </>
         </>
       )}
@@ -122,14 +130,14 @@ const Stories = ({ category }) => {
       {/* Fetch story based on selected category */}
       {category !== "All" && (
         <div>
-          <h2 className="text-center text-xl my-4">
+          <h2 className="text-center text-xl my-4 font-bold capitalize">
             Top Stories About {category}
           </h2>
           {renderStories(categoryStories, categoryLoading, () =>
             dispatch(getStoriesByCategory(category, page + 1))
           )}
           {categoryStories.length <= 0 && (
-            <h1 className="text-white bg-blue-400 text-2xl rounded-full text-center mb-4">
+            <h1 className="text-slate-400 text-lg text-center mb-14 mt-14 capitalize font-bold">
               No stories found!
             </h1>
           )}

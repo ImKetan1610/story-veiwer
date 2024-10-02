@@ -1,6 +1,6 @@
 const Progress = ({ images, progressBars }) => {
   return (
-    <div className="w-1/3 absolute bg-gradient-to-b from-black via-black to-gray-900 flex justify-between">
+    <div className="w-full absolute bg-gradient-to-b from-black via-black to-gray-900 flex justify-between">
       {progressBars &&
         progressBars.map((bar) => (
           <div

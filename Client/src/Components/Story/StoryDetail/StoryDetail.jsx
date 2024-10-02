@@ -10,6 +10,7 @@ import shareIcon from "../../../assets/share.svg";
 import Spinner from "../../Spinner/Spinner";
 
 const ViewStory = () => {
+  const { isMobileScreen } = useSelector((state) => state.layout);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -72,13 +73,14 @@ const ViewStory = () => {
 
   return (
     <div className="w-full h-screen text-white flex flex-col justify-center items-center overflow-hidden">
-      <div className="w-1/3 h-[90%] flex flex-col justify-center items-center relative">
+      <div
+        className={`${
+          isMobileScreen ? "w-full" : "w-1/3"
+        } h-screen flex flex-col justify-center items-center relative`}
+      >
         {/* Top buttons */}
-        <div className="absolute top-16 w-full px-4 flex justify-between items-center bg-gradient-to-b from-black to-transparent z-10">
-          <div
-            className="cursor-pointer p-4"
-            onClick={() => navigate("/")}
-          >
+        <div className="absolute top-10 w-full px-4 flex justify-between items-center bg-gradient-to-b from-black to-transparent z-10">
+          <div className="cursor-pointer p-4" onClick={() => navigate("/")}>
             <svg
               width="16"
               height="16"
@@ -94,10 +96,7 @@ const ViewStory = () => {
               />
             </svg>
           </div>
-          <div
-            className="cursor-pointer p-4"
-            onClick={handleShareStory}
-          >
+          <div className="cursor-pointer p-4" onClick={handleShareStory}>
             <img src={shareIcon} alt="shareIcon" />
           </div>
         </div>
@@ -105,7 +104,7 @@ const ViewStory = () => {
         {story && <StorySlider slides={story.slides} />}
 
         {/* Bottom buttons */}
-        <div className="absolute bottom-8 w-full px-4 flex justify-between items-center bg-gradient-to-t from-black to-transparent z-10">
+        <div className="absolute bottom-0 w-full px-4 flex justify-between items-center bg-gradient-to-t from-black to-transparent z-10">
           {/* Bookmark button */}
           <div className="cursor-pointer p-4">
             <svg

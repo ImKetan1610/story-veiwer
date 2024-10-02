@@ -31,18 +31,17 @@ const Bookmarks = () => {
       <h1 className="text-center mt-8 text-3xl font-semibold text-gray-900">
         Your Bookmarks
       </h1>
+      {bookmarks.length === 0 && (
+          <div className="w-1/2 m-auto bg-slate-400 text-white pt-20 pb-20 pl-8 pr-8 mt-6 rounded-lg font-bold text-center">
+            <h1 className="text-xl mb-10">You have no bookmarks yet!</h1>
+            <Button text={"Go to Home"} myFunction={() => navigate("/")} />
+          </div>
+        )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 place-items-center mt-6">
         {bookmarks &&
           bookmarks.map((bookmark) => (
             <StoryCard story={bookmark} key={bookmark._id} />
           ))}
-
-        {bookmarks.length === 0 && (
-          <div className="bg-blue-400 text-white p-4 mt-6 rounded-lg text-center">
-            <h1 className="text-xl mb-4">You have no bookmarks yet!</h1>
-            <Button text={"Go to Home"} myFunction={() => navigate("/")} />
-          </div>
-        )}
       </div>
     </div>
   );

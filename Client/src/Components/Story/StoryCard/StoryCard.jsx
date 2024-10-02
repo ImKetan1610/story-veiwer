@@ -4,6 +4,7 @@ import { closeModal, openModal } from "../../../redux/modal/modalSlice";
 import { getStory } from "../../API/storyAPI";
 
 const StoryCard = ({ story }) => {
+  const { isMobileScreen } = useSelector((state) => state.layout);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated, userId } = useSelector((state) => state.userAuth);
@@ -23,20 +24,20 @@ const StoryCard = ({ story }) => {
   const storyImg = story.slides[0]?.imageUrl;
 
   return (
-    <div className="w-11/12 h-full cursor-pointer">
+    <div className="w-11/12 h-full cursor-pointer m-auto">
       <div
-        className="h-64 bg-cover bg-center rounded-lg mb-4"
+        className={`h-[400px] bg-cover bg-center rounded-lg mb-4 ${isMobileScreen ? "m-auto" : ""}`}
         style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${storyImg})`,
         }}
         onClick={handleOpen}
       >
         <div className="relative top-3/4 p-4 text-white">
-          <h3 className="text-xl">
+          <h3 className="text-xl font-semibold">
             {story.slides[0].heading && story.slides[0].heading.substring(0, 20)}
             {story.slides[0].heading.length > 20 && "..."}
           </h3>
-          <p className="tracking-wide mt-1">
+          <p className="tracking-wide mt-1 text-xs">
             {story.slides[0].description.substring(0, 30)}
             {story.slides[0].description.length > 30 && "..."}
           </p>
@@ -44,7 +45,7 @@ const StoryCard = ({ story }) => {
       </div>
       {isAuthenticated && userId && story.addedBy === userId && (
         <div
-          className="relative left-1/3 top-[-2rem] inline-flex items-center bg-white rounded-lg p-2 shadow-md cursor-pointer"
+          className="relative left-[40%] top-[-2.1rem] inline-flex items-center p-2 pl-4 pr-4 bg-white rounded-full shadow-md cursor-pointer"
           onClick={handleEditStory}
         >
           <svg

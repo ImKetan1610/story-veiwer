@@ -84,7 +84,7 @@ const DesktopNavbar = () => {
                   />
                 </svg>
                 {menuClick && (
-                  <div className="absolute right-0 mt-2 p-4 bg-white shadow-md flex flex-col items-center">
+                  <div className="absolute right-0 mt-2 p-4 bg-white shadow-md flex flex-col items-center z-50">
                     <h4 className="mb-2">{username}</h4>
                     <Button text="Logout" myFunction={handleLogout} />
                   </div>

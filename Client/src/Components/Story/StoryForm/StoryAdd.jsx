@@ -73,7 +73,7 @@ const StoryForm = () => {
 
   const handleSubmit = async () => {
     const { VITE_BACKEND_URL } = import.meta.env;
-
+    const token = JSON.parse(localStorage.getItem("token"));
     try {
       const isValid = slides.some((slide) => {
         return (
@@ -99,10 +99,18 @@ const StoryForm = () => {
 
       dispatch(addStoryRequest());
 
-      const response = await axios.post(`${VITE_BACKEND_URL}/api/story/add`, {
-        slides,
-        addedBy: user,
-      });
+      const response = await axios.post(
+        `${VITE_BACKEND_URL}/api/story/add`,
+        {
+          slides,
+          addedBy: user,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Attach token in Authorization header
+          },
+        }
+      );
 
       if (response.data.success) {
         toast.success("Story added successfully", {
@@ -147,7 +155,7 @@ const StoryForm = () => {
 
   return (
     <div
-      className={`flex flex-col justify-center items-center bg-white border border-gray-300 rounded-md shadow-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-8 ${
+      className={`flex flex-col justify-center items-center bg-white min-h-[450px] border border-gray-300 rounded-md shadow-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-8 ${
         isMobileScreen ? "w-11/12 p-6" : "w-1/2"
       }`}
       style={{ display: modalContent === ADD_STORY ? "flex" : "none" }}
@@ -188,17 +196,18 @@ const StoryForm = () => {
       </svg>
       {/* Slide Form */}
       <div className="w-full">
-        {slides.map((slide, slideIndex) => (
-          slideIndex === currentSlide && (
-            <SlideForm
-              key={slideIndex}
-              slide={slide}
-              slideIndex={slideIndex}
-              handleChange={(e) => handleChange(e, slideIndex)}
-              handleRemoveSlide={() => handleRemoveSlide(slideIndex)}
-            />
-          )
-        ))}
+        {slides.map(
+          (slide, slideIndex) =>
+            slideIndex === currentSlide && (
+              <SlideForm
+                key={slideIndex}
+                slide={slide}
+                slideIndex={slideIndex}
+                handleChange={(e) => handleChange(e, slideIndex)}
+                handleRemoveSlide={() => handleRemoveSlide(slideIndex)}
+              />
+            )
+        )}
       </div>
       <span className="text-red-500 p-4">{error}</span>
 

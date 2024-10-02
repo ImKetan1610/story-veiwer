@@ -31,7 +31,7 @@ function App() {
   }
 
   return (
-    <>
+    <div className="App">
       <Navbar />
       {modalContent === REGISTER && (
         <Modal>
@@ -68,7 +68,7 @@ function App() {
         <Route path="/my/stories" element={<UserStories />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-    </>
+    </div>
   );
 }
 

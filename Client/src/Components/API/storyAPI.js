@@ -32,16 +32,36 @@ axios.defaults.withCredentials = true;
 
 //add Story
 export const addStory = (values) => async (dispatch) => {
+  // Retrieve the token from local storage
+  const token = localStorage.getItem("token"); // Directly retrieve without parsing
+  console.log("Token:", token); // Log the token for debugging
+
   try {
     dispatch(addStoryRequest());
-    const { data } = await axios.post("/api/story/add", values);
+
+    // Ensure the token is valid before making the request
+    if (!token) {
+      throw new Error("Token is missing. Please log in again.");
+    }
+
+    // Make the API request with the token in the Authorization header
+    const { data } = await axios.post("/api/story/add", values, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach token in Authorization header
+      },
+    });
+
     dispatch(addStorySuccess(data));
     toast.success("Story added successfully", {
       position: "top-center",
     });
   } catch (error) {
+    console.error("Error while adding story:", error); // Log the error for debugging
+
+    // Check if error response is available and log the error message
+    const errorMessage = error.response?.data || "An error occurred. Please try again.";
     dispatch(addStoryFailure());
-    toast.error(error.response.data, { position: "top-center" });
+    toast.error(errorMessage, { position: "top-center" });
   }
 };
 
@@ -77,9 +97,16 @@ export const getStory = (storyId, userId) => async (dispatch) => {
       const { data } = await axios.get(`/api/story/getById/${storyId}`);
       dispatch(fetchStorySuccess(data));
     } else {
+      const token = JSON.parse(localStorage.getItem("token"));
+
       //fetch story for authorized users
       const { data } = await axios.get(
-        `/api/story/getById/${storyId}?userId=${userId}`
+        `/api/story/getById/${storyId}?userId=${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Attach token in Authorization header
+          },
+        }
       );
       dispatch(fetchStorySuccess(data));
     }
@@ -92,13 +119,19 @@ export const getStory = (storyId, userId) => async (dispatch) => {
 // fetch user created stories
 export const getStoriesByUser =
   (userId, userStoriesPage) => async (dispatch) => {
+    const token = JSON.parse(localStorage.getItem("token"));
     try {
       if (userStoriesPage === null) {
         userStoriesPage = 1;
       }
       dispatch(getStoryByUserRequest());
       const { data } = await axios.get(
-        `/api/story/getAll?userId=${userId}&page=${userStoriesPage}`
+        `/api/story/getAll?userId=${userId}&page=${userStoriesPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Attach token in Authorization header
+          },
+        }
       );
       dispatch(getStoryByUserSuccess(data));
     } catch (error) {
@@ -126,8 +159,18 @@ export const getStoriesByCategory = (category, page) => async (dispatch) => {
 
 //like Story
 export const likeStory = (id, userId) => async (dispatch) => {
+  const token = JSON.parse(localStorage.getItem("token"));
+
   try {
-    const data = await axios.put(`/api/story/like/${id}`, { userId: userId });
+    const data = await axios.put(
+      `/api/story/like/${id}`,
+      { userId: userId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Attach token in Authorization header
+        },
+      }
+    );
     dispatch(likeSuccess(data.story));
     toast.success("Story liked and saved successfully", {
       position: "top-center",
@@ -140,11 +183,21 @@ export const likeStory = (id, userId) => async (dispatch) => {
 
 //bookmark story
 export const bookmarkStory = (id, userId) => async (dispatch) => {
+  const token = JSON.parse(localStorage.getItem("token"));
+
   try {
     dispatch(bookmarkRequest());
-    const { data } = await axios.put(`/api/user/bookmark/${id}`, {
-      userId: userId,
-    });
+    const { data } = await axios.put(
+      `/api/user/bookmark/${id}`,
+      {
+        userId: userId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Attach token in Authorization header
+        },
+      }
+    );
     dispatch(bookmarkSuccess(data.story));
     toast.success("Story bookmarked and saved successfully", {
       position: "top-center",
@@ -157,9 +210,14 @@ export const bookmarkStory = (id, userId) => async (dispatch) => {
 
 //get bookmarks
 export const getBookmarks = (userId) => async (dispatch) => {
+  const token = JSON.parse(localStorage.getItem("token"));
   try {
     dispatch(getBookmarksRequest());
-    const { data } = await axios.get(`/api/user/bookmarks/${userId}`);
+    const { data } = await axios.get(`/api/user/bookmarks/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach token in Authorization header
+      },
+    });
     dispatch(getBookmarksSuccess(data.bookmarks));
   } catch (error) {
     dispatch(getBookmarksFailure());

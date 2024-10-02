@@ -2,7 +2,9 @@ import { categories } from "../../../globals";
 
 const SlideForm = ({ slide, slideIndex, handleChange }) => {
   return (
-    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/2 z-20 p-8 bg-white border border-gray-300 rounded shadow-lg flex flex-col">
+    <div>
+
+    <div className="m-w-1/2 m-auto z-20 p-8 bg-white border border-gray-300 rounded shadow-lg flex flex-col">
       <div className="w-full">
         <div className="flex justify-between items-center mb-4">
           <label className="text-xl w-1/3">Heading:</label>
@@ -56,6 +58,7 @@ const SlideForm = ({ slide, slideIndex, handleChange }) => {
           </select>
         </div>
       </div>
+    </div>
     </div>
   );
 };

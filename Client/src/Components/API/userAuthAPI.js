@@ -14,7 +14,7 @@ import {
   logoutRequest,
   logoutSuccess,
   logoutFailure,
-} from "../../redux/userauth/userauthSlice.js";
+} from "../../redux/userAuth/userAuthSlice.js";
 import { getStoriesByUser } from "./storyAPI.js";
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
@@ -49,6 +49,8 @@ export const login = (values) => async (dispatch) => {
     dispatch(loginSuccess(data));
     dispatch(getStoriesByUser(data.userId));
     localStorage.setItem("username", JSON.stringify(data.username));
+    localStorage.setItem("token", JSON.stringify(data.token));
+    // console.log(user,"user")
     toast.success(" User login Successful", {
       position: "top-right",
       autoClose: 2000,
@@ -62,11 +64,19 @@ export const login = (values) => async (dispatch) => {
 //find user
 export const findUser = () => async (dispatch) => {
   const username = JSON.parse(localStorage.getItem("username"));
+  const token = JSON.parse(localStorage.getItem("token"));
   try {
     dispatch(findUserRequest());
-    const { data } = await axios.get(`/api/user/find/${username}`);
+    const { data } = await axios.get(`/api/user/find/${username}`,
+      { headers: {
+      Authorization: `Bearer ${token}`, // Attach token in Authorization header
+    },
+  }
+);
+    console.log("data",data)
     dispatch(findUserSuccess(data));
   } catch (error) {
+    console.log("finduser",error)
     dispatch(findUserFailure());
   }
 };

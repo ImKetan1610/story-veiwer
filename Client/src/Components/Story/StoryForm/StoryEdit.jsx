@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react"; // Add useRef
 import Button from "../../Button/Button";
 import SlideForm from "./SlideForm.jsx";
 import Spinner from "../../Spinner/Spinner";
@@ -7,19 +7,24 @@ import { toast } from "react-toastify";
 import { editStorySuccess } from "../../../redux/story/storySlice";
 import { useDispatch, useSelector } from "react-redux";
 import { closeModal } from "../../../redux/modal/modalSlice";
+import { EDIT_STORY } from "../../../globals.js";
+import { useNavigate } from "react-router-dom";
+
 
 const StoryForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { modalContent } = useSelector((state) => state.modal);
   const { user } = useSelector((state) => state.userAuth);
   const { isMobileScreen } = useSelector((state) => state.layout);
   const { story, storyLoading } = useSelector((state) => state.story);
-
+  
   const initialSlides = story && story.slides ? story.slides : [{}, {}, {}];
-
   const [slides, setSlides] = useState(initialSlides);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [error, setError] = useState("");
+
+  const modalRef = useRef(); // Create a ref for the modal
 
   useEffect(() => {
     if (!storyLoading && story) {
@@ -51,7 +56,7 @@ const StoryForm = () => {
 
   const handleSubmit = async () => {
     const { VITE_BACKEND_URL } = import.meta.env;
-
+    const token = JSON.parse(localStorage.getItem("token"));
     try {
       const hasErrors = slides.some((slide, index) => {
         if (
@@ -84,11 +89,19 @@ const StoryForm = () => {
         return;
       }
 
-      const response = await axios.put(`${VITE_BACKEND_URL}/api/story/edit/${story._id}`, {
-        slides,
-        addedBy: user,
-      });
-      
+      const response = await axios.put(
+        `${VITE_BACKEND_URL}/api/story/edit/${story._id}`,
+        {
+          slides,
+          addedBy: user,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Attach token in Authorization header
+          },
+        }
+      );
+
       if (response.data.success) {
         toast.success("Story edited Successfully", {
           position: "top-center",
@@ -117,6 +130,7 @@ const StoryForm = () => {
 
   const handleClose = () => {
     dispatch(closeModal());
+    navigate("/");
   };
 
   const handlePrevClick = () => {
@@ -129,34 +143,44 @@ const StoryForm = () => {
     );
   };
 
+  const handleBackdropClick = (e) => {
+    // Close modal if clicked outside of modal content
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      handleClose();
+    }
+  };
+
   if (storyLoading) {
     return <Spinner />;
   }
 
   return (
     <div
-      className={`bg-white border border-gray-300 rounded-md p-8 shadow-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 ${isMobileScreen ? "w-11/12" : "w-1/2"}`}
-      style={{ display: modalContent === "EDIT_STORY" ? "flex" : "none" }}
+      className={`flex flex-col justify-center items-center bg-white min-h-[450px] border border-gray-300 rounded-md shadow-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-8 ${
+        isMobileScreen ? "w-11/12 p-6" : "w-1/2"
+      }`}
+      style={{ display: modalContent === EDIT_STORY ? "flex" : "none" }}
     >
-      <div className="w-full flex justify-start items-center text-center mb-4">
+      <div className="flex justify-start items-center w-full">
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`p-2 mr-2 cursor-pointer rounded-lg shadow-md ${currentSlide === index ? "border-2 border-blue-500" : ""}`}
+            className={`text-center p-2 mr-4 rounded-md shadow-sm cursor-pointer ${
+              currentSlide === index ? "border-2 border-blue-500" : ""
+            }`}
             onClick={() => setCurrentSlide(index)}
           >
             Slide {index + 1}
           </div>
         ))}
         <div
-          className="p-2 cursor-pointer rounded-lg shadow-md bg-blue-200 hover:bg-blue-300"
+          className="text-center p-2 cursor-pointer border rounded-md"
           onClick={handleAddSlide}
         >
           Add +
         </div>
       </div>
-
-      {/* Close icon */}
+      {/* Close Icon */}
       <svg
         className="absolute top-4 right-4 cursor-pointer"
         onClick={handleClose}
@@ -171,27 +195,36 @@ const StoryForm = () => {
           fill="#FF0000"
         />
       </svg>
-
-      {/* Slide form */}
+      {/* Slide Form */}
       <div className="w-full">
-        {slides.map((slide, index) => (
-          index === currentSlide && (
-            <SlideForm
-              key={index}
-              slide={slide}
-              slideIndex={index}
-              handleChange={(e) => handleChange(e, index)}
-              handleRemoveSlide={() => handleRemoveSlide(index)}
-            />
-          )
-        ))}
+        {slides.map(
+          (slide, slideIndex) =>
+            slideIndex === currentSlide && (
+              <SlideForm
+                key={slideIndex}
+                slide={slide}
+                slideIndex={slideIndex}
+                handleChange={(e) => handleChange(e, slideIndex)}
+                handleRemoveSlide={() => handleRemoveSlide(slideIndex)}
+              />
+            )
+        )}
       </div>
+      <span className="text-red-500 p-4">{error}</span>
 
-      <span className="text-red-500 mb-4">{error}</span>
-
-      <div className="w-full flex justify-between">
-        <Button myFunction={handlePrevClick} color="#7eff73" text="Previous" size="small" />
-        <Button myFunction={handleNextClick} color="#73abff" text="Next" size="small" />
+      <div className="flex justify-between items-center w-full">
+        <Button
+          myFunction={handlePrevClick}
+          color="#7eff73"
+          text="Previous"
+          size="small"
+        />
+        <Button
+          myFunction={handleNextClick}
+          color="#73abff"
+          text="Next"
+          size="small"
+        />
         {slides.length > 3 ? (
           <Button
             myFunction={() => handleRemoveSlide(currentSlide)}

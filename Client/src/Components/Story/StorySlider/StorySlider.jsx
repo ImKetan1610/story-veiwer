@@ -7,7 +7,7 @@ import arrow from "../../../assets/arrow.png";
 
 const StorySlider = ({ slides }) => {
   const [reload, setReload] = useState(false);
-  const { isSmallScreen } = useSelector((state) => state.layout);
+  const { isMobileScreen } = useSelector((state) => state.layout);
 
   const images = slides && slides.map((slide) => slide.imageUrl);
 
@@ -81,13 +81,17 @@ const StorySlider = ({ slides }) => {
   };
 
   return (
-    <div className="w-[30vw] h-[90vh] flex flex-col relative">
-      <div className="absolute top-1/2 left-[25%] w-[50vw] flex justify-between items-center">
+    <div className=" h-[90vh] flex flex-col relative">
+      <div
+        className={`absolute top-[48%] ${
+          isMobileScreen ? "w-[100vw]" : "left-[-25%] w-[50vw]"
+        } flex justify-between items-center`}
+      >
         <button className="prev-btn p-8 m-4" onClick={() => handleBtns("prev")}>
           <img
             src={arrow}
             alt="<"
-            className={isSmallScreen ? "w-4 rotate-180" : "w-6 rotate-180"}
+            className={isMobileScreen ? "w-4 rotate-180" : "w-6 rotate-180"}
           />
         </button>
         <button className="next-btn p-8 m-4" onClick={() => handleBtns("next")}>
@@ -97,7 +101,7 @@ const StorySlider = ({ slides }) => {
             <img
               src={arrow}
               alt=">"
-              className={isSmallScreen ? "w-4" : "w-6"}
+              className={isMobileScreen ? "w-4" : "w-6"}
             />
           )}
         </button>

@@ -63,7 +63,7 @@ const UserAuth = () => {
 
   return (
     <div
-      className={`w-1/2 bg-white p-8 m-auto z-5 flex flex-col items-center justify-center border border-gray-300 rounded-lg shadow-md transform -translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 ${
+      className={`w-1/2 p-10 pt-20 pb-20 font-bold bg-white p-8 m-auto z-5 flex flex-col items-center justify-center border border-gray-300 rounded-lg shadow-md transform -translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 ${
         modalContent === LOGIN || modalContent === REGISTER ? "flex" : "hidden"
       }`}
     >
@@ -71,7 +71,7 @@ const UserAuth = () => {
         {modalContent === LOGIN ? "Login" : "Register"} to Main
       </h2>
       <svg
-        className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-3 cursor-pointer"
+        className="absolute top-10 right-10 transform translate-x-1/2 -translate-y-3 cursor-pointer"
         onClick={handleClose}
         width="24"
         height="24"
@@ -87,30 +87,37 @@ const UserAuth = () => {
       {/* form */}
       <form onSubmit={handleSubmit} className="w-full">
         <div className="mb-4">
-          <label className="block mb-1">Username</label>
-          <input
-            type="text"
-            placeholder="Enter username"
-            value={username}
-            name="username"
-            onChange={handleChange}
-            className="w-3/4 p-2 border border-black rounded"
-          />
+          <label className="block mb-1">
+            Username
+            <input
+              type="text"
+              placeholder="Enter username"
+              value={username}
+              name="username"
+              onChange={handleChange}
+              className="w-3/5 p-2 ml-10 border border-black rounded"
+            />
+          </label>
         </div>
         <div className="mb-4">
-          <label className="block mb-1">Password</label>
-          <input
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            name="password"
-            onChange={handleChange}
-            className="w-3/4 p-2 border border-black rounded"
-          />
+          <label className="block mb-1">
+            Password
+            <input
+              type="password"
+              placeholder="Enter password"
+              value={password}
+              name="password"
+              onChange={handleChange}
+              className="w-3/5 p-2 ml-11 border border-black rounded"
+            />
+          </label>
         </div>
         {error && <Error error={error} />}
         <div className="flex justify-center">
-          <button type="submit" className="text-lg font-bold border-none rounded-full py-2 px-6 m-2 text-white bg-blue-500 hover:bg-blue-400 transition-all duration-300">
+          <button
+            type="submit"
+            className="text-lg font-bold border-none rounded-full py-2 px-6 m-2 text-white bg-blue-500 hover:bg-blue-400 transition-all duration-300"
+          >
             {modalContent === REGISTER ? "Register" : "Login"}
           </button>
         </div>
