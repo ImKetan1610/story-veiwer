@@ -47,11 +47,11 @@ const editStory = async (req, res, next) => {
 const getStories = async (req, res, next) => {
   //given cateroy of  array out of which user will select
   const categories = [
-    "Medical",
-    "Fruits",
-    "World",
-    "India",
-    "Food",
+    "medical",
+    "fruits",
+    "world",
+    "india",
+    "food",
   ];
   const { userId, category, catLimit, cat } = req.query;
 
