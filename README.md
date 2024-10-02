@@ -1,4 +1,3 @@
-Here's a refined `README.md` for your GitHub project:
 
 # Story Viewer Platform
 
